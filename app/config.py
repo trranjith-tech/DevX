@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     jwt_access_token_expire_minutes: int = 60
 
-    cors_origins: str = "http://localhost:3000,http://localhost:5500,http://127.0.0.1:5500,https://trranjith-tech.github.io"
+    cors_origins: str = "http://localhost:3000,http://localhost:5500,http://127.0.0.1:5500,https://trranjith-tech.github.io,https://devx-frontend-urbo.onrender.com"
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
@@ -20,6 +20,7 @@ class Settings(BaseSettings):
             "http://localhost:5500",
             "http://127.0.0.1:5500",
             "https://trranjith-tech.github.io",
+            "https://devx-frontend-urbo.onrender.com",
         }
         configured_origins = {o.strip() for o in self.cors_origins.split(",") if o.strip()}
         return sorted(configured_origins | required_origins)
