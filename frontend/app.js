@@ -2,8 +2,13 @@
 // No build step: open index.html via a static server and it talks
 // straight to the FastAPI backend over fetch().
 
+const DEPLOYED_API_BASE = 'https://devx-3rqa.onrender.com';
+const savedApiBase = localStorage.getItem('devx_api_base');
+
 const state = {
-  apiBase: localStorage.getItem('devx_api_base') || 'http://127.0.0.1:8000',
+  apiBase: savedApiBase && !/^https?:\/\/(127\.0\.0\.1|localhost):8000\/?$/i.test(savedApiBase)
+    ? savedApiBase.replace(/\/$/, '')
+    : DEPLOYED_API_BASE,
   token: localStorage.getItem('devx_token') || null,
   user: null,
   sessions: [],          // [{session_id, app_name, device_model, status, ...}]
@@ -15,7 +20,8 @@ const state = {
 // ---------- tiny fetch helper ----------
 
 async function api(path, { method = 'GET', body, auth = true } = {}) {
-  const headers = { 'Content-Type': 'application/json' };
+  const headers = {};
+  if (body !== undefined) headers['Content-Type'] = 'application/json';
   if (auth && state.token) headers['Authorization'] = `Bearer ${state.token}`;
 
   const res = await fetch(`${state.apiBase}${path}`, {
